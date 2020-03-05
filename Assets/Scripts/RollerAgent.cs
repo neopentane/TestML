@@ -9,7 +9,7 @@ public class RollerAgent : Agent
     Rigidbody rBody;
     public float speed = 10;
     public Transform Wall;
-    public Animator animator;
+    private Animator animator;
 
     void Start()
     {
