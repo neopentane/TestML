@@ -8,7 +8,6 @@ public class RollerAgent : Agent
     //As you Wished
     Rigidbody rBody;
     public float speed = 10;
-    public Transform Wall;
     private Animator animator;
 
     void Start()
@@ -35,14 +34,22 @@ public class RollerAgent : Agent
     {
         // Target and Agent positions
         AddVectorObs(Target.position);
+        /*
+        for(int i = 0; i < Targets.Length; i++)
+        */
         AddVectorObs(this.transform.position);
-        AddVectorObs(Wall.position);
 
         // Agent velocity
         AddVectorObs(rBody.velocity.x);
         AddVectorObs(rBody.velocity.z);
     }
-
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.collider.CompareTag("Hider"))
+        {
+            animator.SetTrigger("Attack");
+        }
+    }
     public override void AgentAction(float[] vectorAction)
     {
         // Actions, size = 2
@@ -56,15 +63,15 @@ public class RollerAgent : Agent
         // Rewards
         float distanceToTarget = Vector3.Distance(this.transform.position, Target.position);
 
+        
         // Reached target
         if (distanceToTarget < 1.42f)
         {
             Debug.Log("Touch");
-            animator.SetTrigger("Attack");
             SetReward(1.0f);
             Done();
         }
-        else
+        else if (rBody.velocity.magnitude != 0)
         {
             animator.SetBool("Walk", true);
         }
